@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build:css": "node scripts/build_css.js"
+    "build:css": "postcss assets/tailwind.css -o static/build/tailwind.css --env production"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
