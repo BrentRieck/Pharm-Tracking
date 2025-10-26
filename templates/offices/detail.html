@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}{{ office.name }} - MVHS Medication Tracker{% endblock %}
+{% block content %}
+<a href="{% url 'offices' %}" class="text-sm text-slate-600">← Back to offices</a>
+<h1 class="text-2xl font-semibold mt-2">{{ office.name }}</h1>
+<p class="text-slate-600 mb-4">{{ office.address }}</p>
+{% if request.user.role == request.user.Role.ADMIN %}
+<a href="{% url 'office-edit' office.pk %}" class="text-sm text-slate-500 underline">Edit office details</a>
+{% endif %}
+<div class="flex space-x-4 border-b mb-4">
+    <a href="?tab=stock" class="pb-2 {% if tab == 'stock' %}border-b-2 border-slate-800{% endif %}">Stock Catalog</a>
+    <a href="?tab=lots" class="pb-2 {% if tab == 'lots' %}border-b-2 border-slate-800{% endif %}">Lots</a>
+    <a href="?tab=expirations" class="pb-2 {% if tab == 'expirations' %}border-b-2 border-slate-800{% endif %}">Expirations</a>
+</div>
+
+{% if tab == 'stock' %}
+<div class="grid md:grid-cols-2 gap-6">
+    <div>
+        <h2 class="text-lg font-semibold mb-2">Catalog</h2>
+        <ul class="space-y-3">
+            {% for stock in stock_list %}
+            <li class="bg-white rounded shadow p-3">
+                <div class="font-medium">{{ stock.medication.generic_name }}</div>
+                {% if stock.reorder_threshold %}<p class="text-sm text-slate-600">Reorder below {{ stock.reorder_threshold }}</p>{% endif %}
+                <a href="{% url 'office-medication-edit' stock.pk %}" class="text-sm text-slate-500 underline">Edit</a>
+            </li>
+            {% empty %}
+            <p class="text-slate-600">No medications configured.</p>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if request.user.role == request.user.Role.ADMIN %}
+    <div class="bg-white rounded shadow p-4">
+        <h3 class="text-lg font-semibold mb-2">Add medication</h3>
+        <form method="post" action="{% url 'office-medication-create' office.pk %}">
+            {% csrf_token %}
+            {{ office_med_form.as_p }}
+            <button class="mt-2 bg-slate-800 text-white px-4 py-2 rounded">Save</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% elif tab == 'lots' %}
+<div class="grid md:grid-cols-2 gap-6">
+    <div>
+        <h2 class="text-lg font-semibold mb-2">Lots</h2>
+        <div class="space-y-3">
+            {% for lot in lot_list %}
+            <div class="bg-white rounded shadow p-3">
+                <div class="font-medium">{{ lot.office_medication.medication.generic_name }}</div>
+                <p class="text-sm text-slate-600">Lot {{ lot.lot_number|default:'N/A' }} — Qty {{ lot.qty }} — Exp {{ lot.exp_date }}</p>
+                <a href="{% url 'lot-edit' lot.pk %}" class="text-sm text-slate-500 underline">Edit</a>
+            </div>
+            {% empty %}
+            <p class="text-slate-600">No lots recorded.</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="bg-white rounded shadow p-4">
+        <h3 class="text-lg font-semibold mb-2">Add lot</h3>
+        <form method="post" action="{% url 'lot-create' office.pk %}">
+            {% csrf_token %}
+            {{ lot_form.as_p }}
+            <button class="mt-2 bg-slate-800 text-white px-4 py-2 rounded">Save</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="bg-white rounded shadow p-4">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Expiring within {{ default_days }} days</h2>
+        <a href="{% url 'office-expiring-export' office.pk %}?days={{ default_days }}" class="text-sm text-slate-600 underline">Export CSV</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+            <thead>
+                <tr class="text-left border-b">
+                    <th class="py-2">Medication</th>
+                    <th class="py-2">Lot</th>
+                    <th class="py-2">Quantity</th>
+                    <th class="py-2">Expires</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lot in expiring_lots %}
+                <tr class="border-b">
+                    <td class="py-2">{{ lot.office_medication.medication.generic_name }}</td>
+                    <td class="py-2">{{ lot.lot_number|default:'N/A' }}</td>
+                    <td class="py-2">{{ lot.qty }}</td>
+                    <td class="py-2">{{ lot.exp_date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="py-4 text-center text-slate-500">No upcoming expirations.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h3 class="text-lg font-semibold mt-6 mb-2">Expired</h3>
+    <ul class="list-disc pl-6">
+        {% for lot in expired_lots %}
+        <li>{{ lot.office_medication.medication.generic_name }} lot {{ lot.lot_number|default:'N/A' }} expired {{ lot.exp_date }}</li>
+        {% empty %}
+        <li class="text-slate-500">No expired lots 🎉</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}

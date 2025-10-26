@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Users - MVHS Medication Tracker{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Users</h1>
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="bg-white rounded shadow p-4">
+        <h2 class="text-lg font-semibold mb-2">Add User</h2>
+        <form method="post" action="{% url 'user-create' %}" class="space-y-3">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-medium">Email</label>
+                <input type="email" name="email" class="border rounded px-3 py-2 w-full" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Name</label>
+                <input type="text" name="name" class="border rounded px-3 py-2 w-full">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Role</label>
+                <select name="role" class="border rounded px-3 py-2 w-full">
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Password (optional)</label>
+                <input type="password" name="password" class="border rounded px-3 py-2 w-full">
+            </div>
+            <button class="bg-slate-800 text-white px-4 py-2 rounded">Create</button>
+        </form>
+    </div>
+    <div class="bg-white rounded shadow p-4">
+        <h2 class="text-lg font-semibold mb-2">Assign to Office</h2>
+        <form method="post" action="{% url 'membership-create' %}" class="space-y-3">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-medium">User</label>
+                <select name="user" class="border rounded px-3 py-2 w-full">
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Office</label>
+                <select name="office" class="border rounded px-3 py-2 w-full">
+                    {% for office in offices %}
+                    <option value="{{ office.id }}">{{ office.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Role override</label>
+                <select name="role_override" class="border rounded px-3 py-2 w-full">
+                    <option value="">-- None --</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <button class="bg-slate-800 text-white px-4 py-2 rounded">Assign</button>
+        </form>
+    </div>
+</div>
+<div class="bg-white rounded shadow mt-6">
+    <table class="min-w-full text-sm">
+        <thead>
+            <tr class="text-left border-b">
+                <th class="py-2 px-3">Name</th>
+                <th class="py-2 px-3">Email</th>
+                <th class="py-2 px-3">Role</th>
+                <th class="py-2 px-3">Offices</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr class="border-b">
+                <td class="py-2 px-3">{{ user.name|default:user.email }}</td>
+                <td class="py-2 px-3">{{ user.email }}</td>
+                <td class="py-2 px-3 capitalize">{{ user.role }}</td>
+                <td class="py-2 px-3">
+                    {% for membership in user.memberships.all %}
+                    <span class="inline-block bg-slate-100 border rounded px-2 py-1 text-xs mr-1">{{ membership.office.name }}</span>
+                    {% empty %}
+                    <span class="text-slate-500">No offices</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="py-4 text-center text-slate-500">No users yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
