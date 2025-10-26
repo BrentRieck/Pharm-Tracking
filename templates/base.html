@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" x-data="{ sidebar: false }" class="h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}MVHS Medication Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'build/tailwind.css' %}">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <div class="bg-slate-800 text-white">
+        <div class="max-w-6xl mx-auto flex items-center justify-between py-3 px-4">
+            <div class="text-lg font-semibold">MVHS Medication Tracker</div>
+            <div class="space-x-4 text-sm">
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
+                <a href="{% url 'offices' %}" class="hover:underline">Offices</a>
+                <a href="{% url 'medications' %}" class="hover:underline">Medications</a>
+                <a href="{% url 'reports' %}" class="hover:underline">Reports</a>
+                {% if request.user.role == request.user.Role.ADMIN %}
+                <a href="{% url 'users' %}" class="hover:underline">Users</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="hover:underline">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="hover:underline">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        {% if messages %}
+        <div class="space-y-2 mb-4">
+            {% for message in messages %}
+            <div class="p-3 rounded border {% if message.tags == 'error' %}border-red-500 bg-red-100 text-red-800{% else %}border-green-500 bg-green-100 text-green-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

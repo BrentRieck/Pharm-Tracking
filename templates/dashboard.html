@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - MVHS Medication Tracker{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Dashboard</h1>
+<div class="grid md:grid-cols-3 gap-4 mb-6">
+    {% for days, lots in expiring_sets.items %}
+    <div class="bg-white rounded shadow p-4">
+        <h2 class="text-lg font-medium">Expiring ≤ {{ days }} days</h2>
+        <p class="text-3xl font-bold mt-2">{{ lots|length }}</p>
+    </div>
+    {% endfor %}
+    <div class="bg-white rounded shadow p-4">
+        <h2 class="text-lg font-medium">Expired</h2>
+        <p class="text-3xl font-bold mt-2">{{ expired_lots|length }}</p>
+    </div>
+</div>
+<div class="bg-white rounded shadow p-4 mb-6">
+    <h2 class="text-lg font-semibold mb-2">Offices Needing Attention</h2>
+    {% if attention_offices %}
+    <ul class="list-disc pl-6 space-y-1">
+        {% for office in attention_offices %}
+        <li>{{ office.name }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-slate-600">All clear! No offices have upcoming expirations within default thresholds.</p>
+    {% endif %}
+</div>
+<div class="bg-white rounded shadow p-4">
+    <h2 class="text-lg font-semibold mb-2">Upcoming Expirations</h2>
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+            <thead>
+                <tr class="text-left border-b">
+                    <th class="py-2">Medication</th>
+                    <th class="py-2">Office</th>
+                    <th class="py-2">Lot</th>
+                    <th class="py-2">Quantity</th>
+                    <th class="py-2">Expires</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lot in expiring_sets.60 %}
+                <tr class="border-b">
+                    <td class="py-2">{{ lot.office_medication.medication.generic_name }}</td>
+                    <td class="py-2">{{ lot.office_medication.office.name }}</td>
+                    <td class="py-2">{{ lot.lot_number|default:'N/A' }}</td>
+                    <td class="py-2">{{ lot.qty }}</td>
+                    <td class="py-2">{{ lot.exp_date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-4 text-center text-slate-500">No lots expiring within {{ default_days }} days.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
