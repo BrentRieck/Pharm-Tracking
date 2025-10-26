@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Offices - MVHS Medication Tracker{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+    <h1 class="text-2xl font-semibold">Offices</h1>
+    {% if request.user.role == request.user.Role.ADMIN %}
+    <form action="{% url 'office-create' %}" method="post" class="flex space-x-2">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="New office name" class="border rounded px-3 py-2" required>
+        <button class="bg-slate-800 text-white px-4 py-2 rounded">Add</button>
+    </form>
+    {% endif %}
+</div>
+<div class="grid md:grid-cols-2 gap-4">
+    {% for office in offices %}
+    <a href="{% url 'office-detail' office.pk %}" class="block bg-white rounded shadow p-4">
+        <h2 class="text-lg font-semibold">{{ office.name }}</h2>
+        {% if office.address %}<p class="text-sm text-slate-600">{{ office.address }}</p>{% endif %}
+    </a>
+    {% empty %}
+    <p class="text-slate-600">No offices available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

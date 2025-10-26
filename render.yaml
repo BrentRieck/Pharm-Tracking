@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: pharm-tracking-web
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      npm ci --silent
+      npm run build:css
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+      python manage.py ensure_admin
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-file -
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://*onrender.com"
+      - key: DEFAULT_FROM_EMAIL
+        value: "no-reply@mvhsmed.org"
+      - key: EXPIRY_DAYS_DEFAULT
+        value: "60"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pharm-tracking-db
+          property: connectionString
+    autoDeploy: true
+
+cronJobs:
+  - name: daily-expiry-digest
+    schedule: "0 8 * * *"
+    service: pharm-tracking-web
+    command: python manage.py send_digest_emails --days=60
+
+databases:
+  - name: pharm-tracking-db
+    plan: free

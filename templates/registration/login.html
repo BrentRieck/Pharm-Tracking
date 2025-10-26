@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Login - MVHS Medication Tracker{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white shadow rounded p-6">
+    <h1 class="text-xl font-semibold mb-4">Sign in</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="space-y-4">
+            {% for field in form %}
+            <div>
+                <label class="block text-sm font-medium text-slate-700">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ field.errors|striptags }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="mt-6 w-full bg-slate-800 text-white py-2 rounded">Sign in</button>
+    </form>
+</div>
+{% endblock %}
