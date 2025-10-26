@@ -31,11 +31,13 @@ services:
           property: connectionString
     autoDeploy: true
 
-cronJobs:
-  - name: daily-expiry-digest
+  - type: cron
+    name: daily-expiry-digest
+    env: python
+    plan: free
     schedule: "0 8 * * *"
-    service: pharm-tracking-web
     command: python manage.py send_digest_emails --days=60
+    service: pharm-tracking-web
 
 databases:
   - name: pharm-tracking-db
