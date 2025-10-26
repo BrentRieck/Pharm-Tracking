@@ -1,0 +1,212 @@
+[
+  {
+    "model": "inventory.office",
+    "pk": 1,
+    "fields": {
+      "name": "MVHS – New Hartford Medical Office",
+      "address": "4401 Middle Settlement Rd, New Hartford, NY",
+      "notes": "Primary care hub",
+      "is_active": true,
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.office",
+    "pk": 2,
+    "fields": {
+      "name": "MVHS – Rome Medical Office",
+      "address": "267 W Dominick St, Rome, NY",
+      "notes": "Urgent care",
+      "is_active": true,
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.medication",
+    "pk": 1,
+    "fields": {
+      "generic_name": "ACETAMINOPHEN 325 MG TABLET",
+      "ndc": "",
+      "strength": "325 mg",
+      "form": "Tablet",
+      "default_unit": "tablets",
+      "is_active": true,
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.medication",
+    "pk": 2,
+    "fields": {
+      "generic_name": "IBUPROFEN 200 MG",
+      "ndc": "",
+      "strength": "200 mg",
+      "form": "Tablet",
+      "default_unit": "tablets",
+      "is_active": true,
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.medication",
+    "pk": 3,
+    "fields": {
+      "generic_name": "ONDANSETRON ODT 4 MG",
+      "ndc": "",
+      "strength": "4 mg",
+      "form": "ODT",
+      "default_unit": "tablets",
+      "is_active": true,
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.medication",
+    "pk": 4,
+    "fields": {
+      "generic_name": "EPIPEN AUTO-INJECTOR 0.3 MG",
+      "ndc": "",
+      "strength": "0.3 mg",
+      "form": "Auto-injector",
+      "default_unit": "kit",
+      "is_active": true,
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.medication",
+    "pk": 5,
+    "fields": {
+      "generic_name": "DIPHTHERIA/TETANUS/PERTUSSIS (DAPTACEL)",
+      "ndc": "",
+      "strength": "",
+      "form": "Vaccine",
+      "default_unit": "dose",
+      "is_active": true,
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.officemedication",
+    "pk": 1,
+    "fields": {
+      "office": 1,
+      "medication": 1,
+      "reorder_threshold": 50,
+      "notes": "",
+      "is_active": true,
+      "created_at": "2024-01-02T12:00:00Z",
+      "updated_at": "2024-01-02T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.officemedication",
+    "pk": 2,
+    "fields": {
+      "office": 1,
+      "medication": 3,
+      "reorder_threshold": 20,
+      "notes": "",
+      "is_active": true,
+      "created_at": "2024-01-02T12:00:00Z",
+      "updated_at": "2024-01-02T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.officemedication",
+    "pk": 3,
+    "fields": {
+      "office": 2,
+      "medication": 2,
+      "reorder_threshold": 40,
+      "notes": "",
+      "is_active": true,
+      "created_at": "2024-01-02T12:00:00Z",
+      "updated_at": "2024-01-02T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.officemedication",
+    "pk": 4,
+    "fields": {
+      "office": 2,
+      "medication": 4,
+      "reorder_threshold": 5,
+      "notes": "Emergency stock",
+      "is_active": true,
+      "created_at": "2024-01-02T12:00:00Z",
+      "updated_at": "2024-01-02T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.lot",
+    "pk": 1,
+    "fields": {
+      "office_medication": 1,
+      "lot_number": "A123",
+      "qty": 200,
+      "exp_date": "2025-12-31",
+      "received_date": "2024-01-05",
+      "status": "active",
+      "last_audited_at": "2024-03-01T12:00:00Z",
+      "is_active": true,
+      "created_at": "2024-01-05T12:00:00Z",
+      "updated_at": "2024-01-05T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.lot",
+    "pk": 2,
+    "fields": {
+      "office_medication": 2,
+      "lot_number": "Z88",
+      "qty": 30,
+      "exp_date": "2024-08-15",
+      "received_date": "2024-02-01",
+      "status": "active",
+      "last_audited_at": "2024-02-15T12:00:00Z",
+      "is_active": true,
+      "created_at": "2024-02-01T12:00:00Z",
+      "updated_at": "2024-02-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.lot",
+    "pk": 3,
+    "fields": {
+      "office_medication": 3,
+      "lot_number": "B55",
+      "qty": 10,
+      "exp_date": "2024-04-01",
+      "received_date": "2023-12-01",
+      "status": "active",
+      "last_audited_at": "2024-03-01T12:00:00Z",
+      "is_active": true,
+      "created_at": "2023-12-01T12:00:00Z",
+      "updated_at": "2023-12-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.lot",
+    "pk": 4,
+    "fields": {
+      "office_medication": 4,
+      "lot_number": "EPI-991",
+      "qty": 3,
+      "exp_date": "2023-12-31",
+      "received_date": "2023-01-01",
+      "status": "active",
+      "last_audited_at": "2024-01-01T12:00:00Z",
+      "is_active": true,
+      "created_at": "2023-01-01T12:00:00Z",
+      "updated_at": "2023-01-01T12:00:00Z"
+    }
+  }
+]

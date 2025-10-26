@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Reports - MVHS Medication Tracker{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Reports</h1>
+<form method="get" class="flex flex-wrap gap-2 items-end mb-4 bg-white rounded shadow p-4">
+    <div>
+        <label class="block text-sm font-medium">Office</label>
+        <select name="office_id" class="border rounded px-3 py-2">
+            <option value="">All offices</option>
+            {% for office in offices %}
+            <option value="{{ office.id }}" {% if office.id|stringformat:'s' == request.GET.office_id %}selected{% endif %}>{{ office.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium">Days</label>
+        <input type="number" name="days" value="{{ days }}" class="border rounded px-3 py-2">
+    </div>
+    <button class="bg-slate-800 text-white px-4 py-2 rounded">Run</button>
+</form>
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="bg-white rounded shadow p-4">
+        <h2 class="text-lg font-semibold mb-2">Expiring (≤ {{ days }} days)</h2>
+        <ul class="space-y-2">
+            {% for lot in expiring %}
+            <li>
+                <div class="font-medium">{{ lot.office_medication.medication.generic_name }}</div>
+                <div class="text-sm text-slate-600">{{ lot.office_medication.office.name }} — Qty {{ lot.qty }} — Exp {{ lot.exp_date }}</div>
+            </li>
+            {% empty %}
+            <li class="text-slate-500">No expiring lots.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="bg-white rounded shadow p-4">
+        <h2 class="text-lg font-semibold mb-2">Expired</h2>
+        <ul class="space-y-2">
+            {% for lot in expired %}
+            <li>
+                <div class="font-medium">{{ lot.office_medication.medication.generic_name }}</div>
+                <div class="text-sm text-slate-600">{{ lot.office_medication.office.name }} — Qty {{ lot.qty }} — Exp {{ lot.exp_date }}</div>
+            </li>
+            {% empty %}
+            <li class="text-slate-500">No expired lots.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="bg-white rounded shadow p-4 mt-6">
+    <h2 class="text-lg font-semibold mb-2">Inventory Totals</h2>
+    {% for office, rows in inventory.items %}
+    <h3 class="text-md font-semibold mt-3">{{ office }}</h3>
+    <ul class="pl-5 list-disc text-sm">
+        {% for row in rows %}
+        <li>{{ row.office_medication__medication__generic_name }} — Qty {{ row.total_qty }} (Next exp {{ row.soonest_exp }})</li>
+        {% endfor %}
+    </ul>
+    {% empty %}
+    <p class="text-slate-500">No inventory data.</p>
+    {% endfor %}
+</div>
+{% endblock %}
